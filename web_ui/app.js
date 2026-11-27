@@ -354,7 +354,7 @@
       else caseLabelEl.textContent = isLive ? "Open case" : "Case";
     }
 
-    const showCase = Boolean(battery.show_case) || Boolean(battery.case_available);
+    const showCase = Boolean(battery.show_case) || Boolean(battery.case_available) || battery.case !== null;
     $("#battery-case-divider").classList.toggle("hidden", !showCase);
     $("#battery-case-col").classList.toggle("hidden", !showCase);
 

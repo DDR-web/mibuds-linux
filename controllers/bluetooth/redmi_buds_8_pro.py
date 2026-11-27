@@ -517,8 +517,13 @@ class RedmiBuds8ProService:
     def _load_preferences(self) -> None:
         """Load non-personal UI preferences only (never MAC, serial, or stale telemetry)."""
         try:
-            if self._prefs_path.exists():
-                saved = json.loads(self._prefs_path.read_text(encoding="utf-8"))
+            source_path = self._prefs_path
+            if not source_path.exists():
+                legacy_path = source_path.parent.parent / "xiaomi-earbuds-linux" / "preferences.json"
+                if legacy_path.exists():
+                    source_path = legacy_path
+            if source_path.exists():
+                saved = json.loads(source_path.read_text(encoding="utf-8"))
                 if isinstance(saved, dict):
                     color = saved.get("color")
                     if color in VALID_COLORS:
@@ -542,6 +547,8 @@ class RedmiBuds8ProService:
                             val = theme.get(key)
                             if isinstance(val, str) and HEX_COLOR_RE.match(val):
                                 target[key] = val.upper()
+                if source_path != self._prefs_path:
+                    self._save_preferences()
         except Exception:
             pass
 

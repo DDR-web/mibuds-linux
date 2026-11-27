@@ -12,11 +12,19 @@ A native GTK3 + WebKit2 desktop app inspired by the Xiaomi Earbuds mobile interf
 
 <br>
 
-<img src="docs/screenshots/overview-dark.png" alt="MiBuds Linux dark OLED interface" width="760">
+<img src="docs/screenshots/overview-dark.png" alt="MiBuds Linux dark OLED interface with ANC slider and battery telemetry" width="760">
 
 </div>
 
 > **Disclaimer:** MiBuds Linux is an independent, unofficial community open-source project and is **not affiliated with, endorsed by, or sponsored by Xiaomi Inc., Redmi, or Dolby Laboratories**. All product names, logos, and imagery belong to their respective owners and are used purely for hardware identification and visual familiarity.
+
+---
+
+## Screenshots
+
+| Live Charging & Case Battery | Custom Theme Support |
+| :---: | :---: |
+| <img src="docs/screenshots/overview-charging.png" alt="Live charging indicator and case battery percentage" width="420"> | <img src="docs/screenshots/overview-custom-theme.png" alt="Custom accent, background, and card colors theme" width="420"> |
 
 ---
 

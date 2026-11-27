@@ -1,0 +1,819 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+  <title>MiBuds Linux</title>
+  <link rel="stylesheet" href="/styles.css" />
+</head>
+<body>
+  <div id="app-shell" class="app-shell">
+    <!-- Desktop Header Bar -->
+    <header id="desktop-topbar" class="desktop-topbar">
+      <div class="topbar-inner">
+        <div class="topbar-brand">
+          <div class="brand-title-row">
+            <h1 id="device-title" class="device-title">MiBuds Linux</h1>
+            <span id="live-pill" class="live-pill" title="BlueZ RFCOMM connection status">
+              <span class="live-dot"></span>
+              <span id="live-pill-text">Disconnected</span>
+            </span>
+          </div>
+          <button id="btn-manage-earphones" class="manage-link" type="button">
+            <span>Manage your earphones</span>
+            <span class="chevron-inline" aria-hidden="true">›</span>
+          </button>
+        </div>
+
+        <nav class="topbar-nav" aria-label="Primary sections">
+          <button class="nav-pill active" data-tab="overview" type="button">Overview</button>
+          <button class="nav-pill" data-tab="gestures" type="button">Gestures</button>
+          <button class="nav-pill" data-tab="audio-effects" type="button">Audio effects</button>
+          <button class="nav-pill" data-tab="additional-settings" type="button">Additional</button>
+          <button class="nav-pill" data-tab="find-earphones" type="button">Find</button>
+          <button class="nav-pill" data-tab="manage" type="button">Bluetooth</button>
+        </nav>
+
+        <div class="topbar-actions">
+          <button id="btn-theme-shortcut" class="header-circle-btn" type="button" title="Appearance &amp; Theme (Dark / Light / Custom)" aria-label="Appearance and Theme">
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="4"></circle>
+              <path d="M12 2v2"></path>
+              <path d="M12 20v2"></path>
+              <path d="m4.93 4.93 1.41 1.41"></path>
+              <path d="m17.66 17.66 1.41 1.41"></path>
+              <path d="M2 12h2"></path>
+              <path d="M20 12h2"></path>
+              <path d="m6.34 17.66-1.41 1.41"></path>
+              <path d="m19.07 4.93-1.41 1.41"></path>
+            </svg>
+          </button>
+          <button id="btn-add-device" class="header-circle-btn" type="button" title="Scan &amp; Connect BlueZ RFCOMM" aria-label="Connect Bluetooth">
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+              <line x1="12" y1="5" x2="12" y2="19"></line>
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+            </svg>
+          </button>
+          <button id="btn-quick-refresh" class="header-circle-btn" type="button" title="Refresh battery &amp; status from earbuds" aria-label="Refresh earbuds info">
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="23 4 23 10 17 10"></polyline>
+              <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- 2-Column Responsive PC Desktop Workspace -->
+    <div class="pc-workspace">
+      <!-- LEFT PERSISTENT COLUMN: Hero, Battery, ANC & Immersive Commute -->
+      <aside class="pc-left-pane">
+        <!-- Hero Section -->
+        <div class="hero-section">
+          <div class="hero-image-wrap">
+            <img id="hero-earbuds-img" class="hero-image" src="/assets/xiaomi_8_pro/hero_black.png" alt="Xiaomi Earbuds" />
+          </div>
+          <div id="dolby-badge-wrap" class="dolby-badge-wrap dolby-off">
+            <img id="dolby-logo-img" class="dolby-logo" src="/assets/xiaomi_8_pro/dolby_dark.png" alt="Dolby Audio" />
+          </div>
+          <div id="connection-status-text" class="connection-status">Disconnected</div>
+        </div>
+
+        <!-- Battery Card -->
+        <section id="battery-card" class="card battery-card">
+          <div class="battery-col" data-side="left">
+            <div class="battery-inner">
+              <div id="bat-icon-left" class="bat-svg-wrap"></div>
+              <div id="bat-pct-left" class="bat-pct">—</div>
+              <div id="bat-label-left" class="bat-label">L</div>
+            </div>
+          </div>
+          <div class="battery-divider"></div>
+          <div class="battery-col" data-side="right">
+            <div class="battery-inner">
+              <div id="bat-icon-right" class="bat-svg-wrap"></div>
+              <div id="bat-pct-right" class="bat-pct">—</div>
+              <div id="bat-label-right" class="bat-label">R</div>
+            </div>
+          </div>
+          <div id="battery-case-divider" class="battery-divider hidden"></div>
+          <div id="battery-case-col" class="battery-col hidden" data-side="case" title="Case battery is reported when at least one earbud is in the open charging case">
+            <div class="battery-inner">
+              <div id="bat-icon-case" class="bat-svg-wrap"></div>
+              <div id="bat-pct-case" class="bat-pct">—</div>
+              <div id="bat-label-case" class="bat-label">Case</div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Noise Control (ANC) Card -->
+        <section id="noise-card" class="card noise-card">
+          <div class="noise-modes-row">
+            <button class="noise-mode-btn" data-mode="transparency" type="button">
+              <span class="noise-circle"><span class="noise-icon-slot" data-icon="transparency"></span></span>
+              <span class="noise-label">Transparency</span>
+            </button>
+            <button class="noise-mode-btn" data-mode="anc" type="button">
+              <span class="noise-circle"><span class="noise-icon-slot" data-icon="anc"></span></span>
+              <span class="noise-label">Noise cancellation</span>
+            </button>
+            <button class="noise-mode-btn" data-mode="off" type="button">
+              <span class="noise-circle"><span class="noise-icon-slot" data-icon="off"></span></span>
+              <span class="noise-label">Off</span>
+            </button>
+          </div>
+
+          <!-- ANC Subpanel (Smart ANC + Continuous Light..Deep Slider) -->
+          <div id="anc-subpanel" class="noise-subpanel hidden">
+            <div class="card-inner-divider"></div>
+            <div id="smart-anc-row" class="smart-anc-row">
+              <span class="row-title-bold">Smart noise cancellation</span>
+              <button id="toggle-smart-anc" class="mi-switch" type="button" role="switch" aria-checked="false">
+                <span class="mi-switch-knob"></span>
+              </button>
+            </div>
+            <div class="anc-slider-block">
+              <div class="slider-control-row">
+                <span class="slider-side-icon" id="icon-anc-light"></span>
+                <div id="anc-slider-track" class="mi-slider-track" role="slider" aria-label="Noise cancellation level" aria-valuemin="0" aria-valuemax="19" aria-valuenow="18" tabindex="0">
+                  <div id="anc-slider-thumb" class="mi-slider-thumb"><span class="mi-slider-thumb-dot"></span></div>
+                </div>
+                <span class="slider-side-icon" id="icon-anc-deep"></span>
+              </div>
+              <div class="anc-slider-labels">
+                <span>Light</span>
+                <span>Deep</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Transparency Subpanel (3 discrete snapped steps) -->
+          <div id="transparency-subpanel" class="noise-subpanel hidden">
+            <div class="card-inner-divider"></div>
+            <div id="transparency-mode-label" class="transparency-mode-title">Enhance voice</div>
+            <div class="slider-control-row transparency-slider-row">
+              <span class="slider-side-icon" id="icon-trans-small"></span>
+              <div id="trans-slider-track" class="mi-slider-track mi-slider-discrete" role="slider" aria-label="Transparency mode" aria-valuemin="0" aria-valuemax="2" aria-valuenow="1" tabindex="0">
+                <span class="mi-snap-dot" data-step="0"></span>
+                <span class="mi-snap-dot" data-step="1"></span>
+                <span class="mi-snap-dot" data-step="2"></span>
+                <div id="trans-slider-thumb" class="mi-slider-thumb"><span class="mi-slider-thumb-dot"></span></div>
+              </div>
+              <span class="slider-side-icon" id="icon-trans-large"></span>
+            </div>
+          </div>
+        </section>
+
+        <!-- Immersive Commute Card -->
+        <section id="immersive-commute-card" class="card menu-card immersive-card">
+          <div id="immersive-commute-trigger" class="immersive-header clickable-card">
+            <div class="immersive-left">
+              <div class="row-title">Immersive commute</div>
+              <div class="row-subtitle">Noise cancellation paired with soothing sounds for a calmer commute</div>
+            </div>
+            <div class="row-right-selector">
+              <span id="immersive-commute-value" class="selector-value">Off</span>
+              <span class="updown-chevrons" aria-hidden="true"></span>
+            </div>
+          </div>
+          <div id="immersive-volume-panel" class="immersive-volume-panel hidden">
+            <div class="card-inner-divider"></div>
+            <div class="immersive-vol-row">
+              <span class="immersive-vol-label">Ambient volume</span>
+              <input id="immersive-volume-slider" class="theme-range" type="range" min="0" max="100" step="1" value="65" aria-label="Ambient sound volume" />
+              <span id="immersive-volume-val" class="selector-value">65%</span>
+            </div>
+          </div>
+        </section>
+      </aside>
+
+      <!-- RIGHT DETAIL PANE: Overview Cards + All Sub-screens -->
+      <main class="pc-right-pane">
+        <!-- VIEW 1: OVERVIEW -->
+        <section id="screen-overview" class="screen screen-active" data-screen="overview">
+          <div class="pane-scroll overview-grid">
+            <!-- Onboarding Banner (shown only when disconnected) -->
+            <section id="connect-banner" class="card connect-banner overview-span-2">
+              <div class="connect-banner-copy">
+                <div class="row-title">Connect your Xiaomi or Redmi earbuds</div>
+                <div class="row-subtitle">
+                  1. Pair and connect your earbuds in your Linux Bluetooth settings.<br />
+                  2. Click <strong>Scan &amp; Connect</strong> to bind the BlueZ RFCOMM control channel.
+                </div>
+                <div id="banner-error-note" class="bt-error-banner hidden"></div>
+              </div>
+              <div class="connect-banner-actions">
+                <button id="btn-banner-connect" class="mi-pill-btn primary" type="button">Scan &amp; Connect</button>
+                <button id="btn-banner-manage" class="mi-pill-btn" type="button">Bluetooth</button>
+              </div>
+            </section>
+
+            <!-- Menu Group 1 -->
+            <section class="card menu-group-card">
+              <button class="menu-row" data-nav="gestures" type="button">
+                <span class="blue-icon-circle" data-menu-icon="gestures"></span>
+                <span class="menu-row-text">
+                  <span class="row-title">Gestures</span>
+                  <span id="overview-gestures-summary" class="row-subtitle-compact">Customize tap, hold, and swipe actions</span>
+                </span>
+                <span class="row-chevron" aria-hidden="true"></span>
+              </button>
+              <button class="menu-row" data-nav="audio-effects" type="button">
+                <span class="blue-icon-circle" data-menu-icon="audio-effects"></span>
+                <span class="menu-row-text">
+                  <span class="row-title">Audio effects</span>
+                  <span id="overview-audio-summary" class="row-subtitle-compact">Spatial audio and equalizer presets</span>
+                </span>
+                <span class="row-chevron" aria-hidden="true"></span>
+              </button>
+              <button class="menu-row" data-nav="additional-settings" type="button">
+                <span class="blue-icon-circle" data-menu-icon="additional-settings"></span>
+                <span class="menu-row-text">
+                  <span class="row-title">Additional settings</span>
+                  <span id="overview-additional-summary" class="row-subtitle-compact">In-ear detection, dual connection, wearing status</span>
+                </span>
+                <span class="row-chevron" aria-hidden="true"></span>
+              </button>
+            </section>
+
+            <!-- Menu Group 2 -->
+            <section class="card menu-group-card">
+              <button class="menu-row" data-nav="find-earphones" type="button">
+                <span class="blue-icon-circle" data-menu-icon="find-earphones"></span>
+                <span class="menu-row-text">
+                  <span class="row-title">Find your earphones</span>
+                  <span class="row-subtitle-compact">Ring left or right earbud via Bluetooth</span>
+                </span>
+                <span class="row-chevron" aria-hidden="true"></span>
+              </button>
+              <button class="menu-row" data-nav="update-firmware" type="button">
+                <span class="blue-icon-circle" data-menu-icon="update-firmware"></span>
+                <span class="menu-row-text">
+                  <span class="row-title">Firmware info</span>
+                  <span id="home-fw-subtitle" class="row-subtitle-compact">Connect earbuds to read firmware</span>
+                </span>
+                <span class="row-chevron" aria-hidden="true"></span>
+              </button>
+              <button class="menu-row" data-nav="manage" type="button">
+                <span class="blue-icon-circle" data-menu-icon="bluetooth"></span>
+                <span class="menu-row-text">
+                  <span class="row-title">Bluetooth &amp; RCSP</span>
+                  <span id="overview-bt-summary" class="row-subtitle-compact">BlueZ RFCOMM session &amp; packet monitor</span>
+                </span>
+                <span class="row-chevron" aria-hidden="true"></span>
+              </button>
+            </section>
+
+            <!-- Menu Group 3 -->
+            <section class="card menu-group-card overview-span-2 overview-footer-card">
+              <button class="menu-row" data-nav="about-device" type="button">
+                <span class="blue-icon-circle" data-menu-icon="about-device"></span>
+                <span class="menu-row-text">
+                  <span class="row-title">About device</span>
+                  <span id="overview-device-summary" class="row-subtitle-compact">Theme (Dark / Light / Custom) &amp; hardware info</span>
+                </span>
+                <span class="row-chevron" aria-hidden="true"></span>
+              </button>
+              <button class="menu-row" data-nav="faq" type="button">
+                <span class="blue-icon-circle" data-menu-icon="faq"></span>
+                <span class="menu-row-text">
+                  <span class="row-title">FAQ</span>
+                  <span class="row-subtitle-compact">Pairing, ANC &amp; case battery help</span>
+                </span>
+                <span class="row-chevron" aria-hidden="true"></span>
+              </button>
+              <button class="menu-row" data-nav="about-earphones" type="button">
+                <span class="blue-icon-circle" data-menu-icon="about-earphones"></span>
+                <span class="menu-row-text">
+                  <span class="row-title">About app</span>
+                  <span class="row-subtitle-compact">Open-source GPL-3.0 credits</span>
+                </span>
+                <span class="row-chevron" aria-hidden="true"></span>
+              </button>
+            </section>
+          </div>
+        </section>
+
+        <!-- VIEW 2: GESTURES -->
+        <section id="screen-gestures" class="screen" data-screen="gestures">
+          <header class="sub-header">
+            <button class="back-btn" data-back type="button" aria-label="Back"></button>
+            <div class="sub-header-copy">
+              <h2 class="sub-large-title">Gestures</h2>
+              <p class="sub-subtitle">Single-tap gestures are easy to trigger accidentally</p>
+            </div>
+          </header>
+          <div class="pane-scroll flat-list-scroll">
+            <button class="flat-row" data-gesture-popup="single:left" type="button">
+              <span class="flat-row-label">Tap left earphone once</span>
+              <span class="row-right-selector">
+                <span class="selector-value" id="val-single-left">—</span>
+                <span class="updown-chevrons"></span>
+              </span>
+            </button>
+            <button class="flat-row" data-gesture-popup="single:right" type="button">
+              <span class="flat-row-label">Tap right earphone once</span>
+              <span class="row-right-selector">
+                <span class="selector-value" id="val-single-right">—</span>
+                <span class="updown-chevrons"></span>
+              </span>
+            </button>
+            <button class="flat-row" data-gesture-popup="double:left" type="button">
+              <span class="flat-row-label">Double tap left earphone</span>
+              <span class="row-right-selector">
+                <span class="selector-value" id="val-double-left">—</span>
+                <span class="updown-chevrons"></span>
+              </span>
+            </button>
+            <button class="flat-row" data-gesture-popup="double:right" type="button">
+              <span class="flat-row-label">Double tap right earphone</span>
+              <span class="row-right-selector">
+                <span class="selector-value" id="val-double-right">—</span>
+                <span class="updown-chevrons"></span>
+              </span>
+            </button>
+            <button class="flat-row" data-gesture-popup="triple:left" type="button">
+              <span class="flat-row-label">Triple tap left earphone</span>
+              <span class="row-right-selector">
+                <span class="selector-value" id="val-triple-left">—</span>
+                <span class="updown-chevrons"></span>
+              </span>
+            </button>
+            <button class="flat-row" data-gesture-popup="triple:right" type="button">
+              <span class="flat-row-label">Triple tap right earphone</span>
+              <span class="row-right-selector">
+                <span class="selector-value" id="val-triple-right">—</span>
+                <span class="updown-chevrons"></span>
+              </span>
+            </button>
+            <button class="flat-row" data-hold-side="left" type="button">
+              <span class="flat-row-label">Press and hold left earphone</span>
+              <span class="row-right-selector">
+                <span class="selector-value" id="val-hold-left">—</span>
+                <span class="row-chevron"></span>
+              </span>
+            </button>
+            <button class="flat-row" data-hold-side="right" type="button">
+              <span class="flat-row-label">Press and hold right earphone</span>
+              <span class="row-right-selector">
+                <span class="selector-value" id="val-hold-right">—</span>
+                <span class="row-chevron"></span>
+              </span>
+            </button>
+            <button class="flat-row" data-gesture-popup="swipe:left" type="button">
+              <span class="flat-row-label">Swipe left earphone</span>
+              <span class="row-right-selector">
+                <span class="selector-value" id="val-swipe-left">—</span>
+                <span class="row-chevron"></span>
+              </span>
+            </button>
+            <button class="flat-row" data-gesture-popup="swipe:right" type="button">
+              <span class="flat-row-label">Swipe right earphone</span>
+              <span class="row-right-selector">
+                <span class="selector-value" id="val-swipe-right">—</span>
+                <span class="row-chevron"></span>
+              </span>
+            </button>
+          </div>
+        </section>
+
+        <!-- VIEW 3: PRESS AND HOLD LEFT / RIGHT EARPHONE -->
+        <section id="screen-press-hold" class="screen" data-screen="press-hold">
+          <header class="sub-header">
+            <button class="back-btn" data-back type="button" aria-label="Back"></button>
+            <div class="sub-header-copy">
+              <h2 id="press-hold-title" class="sub-large-title">Press and hold left earphone</h2>
+            </div>
+          </header>
+          <div class="pane-scroll press-hold-scroll">
+            <div class="hold-action-list">
+              <button class="hold-action-option" data-hold-action="none" type="button">
+                <span class="hold-check-slot"></span>
+                <span class="hold-action-copy">
+                  <span class="hold-action-title">None</span>
+                </span>
+              </button>
+              <button class="hold-action-option" data-hold-action="voice_assistant" type="button">
+                <span class="hold-check-slot"></span>
+                <span class="hold-action-copy">
+                  <span class="hold-action-title">Voice assistant</span>
+                </span>
+              </button>
+              <button class="hold-action-option" data-hold-action="noise_cancellation" type="button">
+                <span class="hold-check-slot"></span>
+                <span class="hold-action-copy">
+                  <span class="hold-action-title">Noise cancellation</span>
+                  <span class="hold-action-desc">Press and hold to switch between selected noise cancellation modes</span>
+                </span>
+              </button>
+            </div>
+
+            <div class="flat-divider"></div>
+            <div class="hold-modes-section-caption">Noise cancellation &nbsp;|&nbsp; Select at least two options</div>
+
+            <div id="hold-cycle-modes-list" class="hold-cycle-modes-list">
+              <button class="hold-cycle-row" data-cycle-mode="anc" type="button">
+                <span class="hold-mode-icon" data-icon="anc"></span>
+                <span class="hold-mode-copy">
+                  <span class="hold-mode-title">Noise cancellation</span>
+                  <span class="hold-mode-desc">Block external sounds</span>
+                </span>
+                <span class="mi-radio-check"></span>
+              </button>
+              <button class="hold-cycle-row" data-cycle-mode="transparency" type="button">
+                <span class="hold-mode-icon" data-icon="transparency"></span>
+                <span class="hold-mode-copy">
+                  <span class="hold-mode-title">Transparency</span>
+                  <span class="hold-mode-desc">Allow external sounds</span>
+                </span>
+                <span class="mi-radio-check"></span>
+              </button>
+              <button class="hold-cycle-row" data-cycle-mode="off" type="button">
+                <span class="hold-mode-icon" data-icon="off"></span>
+                <span class="hold-mode-copy">
+                  <span class="hold-mode-title">Off</span>
+                  <span class="hold-mode-desc">Turn off noise cancellation and transparency</span>
+                </span>
+                <span class="mi-radio-check"></span>
+              </button>
+            </div>
+          </div>
+        </section>
+
+        <!-- VIEW 4: AUDIO EFFECTS -->
+        <section id="screen-audio-effects" class="screen" data-screen="audio-effects">
+          <header class="sub-header">
+            <button class="back-btn" data-back type="button" aria-label="Back"></button>
+            <div class="sub-header-copy">
+              <h2 class="sub-large-title">Audio effects</h2>
+            </div>
+          </header>
+          <div class="pane-scroll card-list-scroll">
+            <section id="spatial-card" class="card menu-group-card">
+              <div id="row-spatial-audio" class="menu-row static-row">
+                <span class="menu-row-text">
+                  <span class="row-title">Spatial audio</span>
+                  <span class="row-subtitle-compact">360° soundstage rendering (Dolby Audio on supported models)</span>
+                </span>
+                <button id="toggle-spatial-audio" class="mi-switch" type="button" role="switch" aria-checked="false">
+                  <span class="mi-switch-knob"></span>
+                </button>
+              </div>
+              <div id="row-head-tracking" class="menu-row static-row">
+                <span class="menu-row-text">
+                  <span class="row-title">Head tracking</span>
+                  <span class="row-subtitle-compact">Track head movement dynamically</span>
+                </span>
+                <button id="toggle-head-tracking" class="mi-switch" type="button" role="switch" aria-checked="false">
+                  <span class="mi-switch-knob"></span>
+                </button>
+              </div>
+              <button id="btn-spatial-scene" class="menu-row" type="button">
+                <span class="menu-row-text">
+                  <span class="row-title">Sound rendering scene</span>
+                </span>
+                <span class="row-right-selector">
+                  <span id="val-spatial-scene" class="selector-value">Standard</span>
+                  <span class="updown-chevrons"></span>
+                </span>
+              </button>
+            </section>
+
+            <section class="card menu-group-card">
+              <button id="btn-eq-preset" class="menu-row" type="button">
+                <span class="menu-row-text">
+                  <span class="row-title">Equalizer preset</span>
+                  <span class="row-subtitle-compact">Select built-in hardware sound profiles</span>
+                </span>
+                <span class="row-right-selector">
+                  <span id="val-eq-preset" class="selector-value">Standard</span>
+                  <span class="updown-chevrons"></span>
+                </span>
+              </button>
+              <div id="row-adaptive-sound" class="menu-row static-row">
+                <span class="menu-row-text">
+                  <span class="row-title">Adaptive sound</span>
+                  <span class="row-subtitle-compact">Automatically adapt sound curve to ear canal</span>
+                </span>
+                <button id="toggle-adaptive-sound" class="mi-switch" type="button" role="switch" aria-checked="false">
+                  <span class="mi-switch-knob"></span>
+                </button>
+              </div>
+            </section>
+          </div>
+        </section>
+
+        <!-- VIEW 5: ADDITIONAL SETTINGS -->
+        <section id="screen-additional-settings" class="screen" data-screen="additional-settings">
+          <header class="sub-header">
+            <button class="back-btn" data-back type="button" aria-label="Back"></button>
+            <div class="sub-header-copy">
+              <h2 class="sub-large-title">Additional settings</h2>
+            </div>
+          </header>
+          <div class="pane-scroll card-list-scroll">
+            <section class="card menu-group-card">
+              <div id="row-in-ear" class="menu-row static-row">
+                <span class="menu-row-text">
+                  <span class="row-title">In-ear detection</span>
+                  <span class="row-subtitle-compact">Pause playback automatically when earbuds are removed</span>
+                </span>
+                <button id="toggle-in-ear" class="mi-switch" type="button" role="switch" aria-checked="true">
+                  <span class="mi-switch-knob"></span>
+                </button>
+              </div>
+              <div id="row-dual-conn" class="menu-row static-row">
+                <span class="menu-row-text">
+                  <span class="row-title">Dual-device connection</span>
+                  <span class="row-subtitle-compact">Connect to two Bluetooth devices simultaneously</span>
+                </span>
+                <button id="toggle-dual-conn" class="mi-switch" type="button" role="switch" aria-checked="false">
+                  <span class="mi-switch-knob"></span>
+                </button>
+              </div>
+              <div id="row-auto-answer" class="menu-row static-row">
+                <span class="menu-row-text">
+                  <span class="row-title">Auto-answer calls</span>
+                  <span class="row-subtitle-compact">Answer incoming calls when wearing earphones</span>
+                </span>
+                <button id="toggle-auto-answer" class="mi-switch" type="button" role="switch" aria-checked="false">
+                  <span class="mi-switch-knob"></span>
+                </button>
+              </div>
+              <div id="row-adaptive-vol" class="menu-row static-row hidden">
+                <span class="menu-row-text">
+                  <span class="row-title">Adaptive volume</span>
+                  <span class="row-subtitle-compact">Adjust media volume based on ambient noise</span>
+                </span>
+                <button id="toggle-adaptive-vol" class="mi-switch" type="button" role="switch" aria-checked="false">
+                  <span class="mi-switch-knob"></span>
+                </button>
+              </div>
+            </section>
+
+            <section class="card fit-test-card">
+              <div class="fit-test-top">
+                <div>
+                  <div class="row-title">Wearing sensor status</div>
+                  <div class="row-subtitle-compact">Live in-ear detection reported by earbuds (ANC requires at least one earbud worn)</div>
+                </div>
+                <button id="btn-refresh-wearing" class="mi-pill-btn" type="button">Refresh</button>
+              </div>
+              <div class="fit-test-visual">
+                <img id="fit-test-img" src="/assets/xiaomi_8_pro/fit_black.png" alt="Earbuds wearing status" />
+                <div class="fit-results-row">
+                  <span id="wearing-badge-left" class="fit-badge fit-neutral">L: Unknown</span>
+                  <span id="wearing-badge-right" class="fit-badge fit-neutral">R: Unknown</span>
+                </div>
+              </div>
+            </section>
+          </div>
+        </section>
+
+        <!-- VIEW 6: FIND YOUR EARPHONES -->
+        <section id="screen-find-earphones" class="screen" data-screen="find-earphones">
+          <header class="sub-header">
+            <button class="back-btn" data-back type="button" aria-label="Back"></button>
+            <div class="sub-header-copy">
+              <h2 class="sub-large-title">Find your earphones</h2>
+              <p class="sub-subtitle">Do not play sound while wearing your earphones to protect your hearing.</p>
+            </div>
+          </header>
+          <div class="pane-scroll card-list-scroll">
+            <section class="card find-buds-card">
+              <img id="find-buds-img" class="find-buds-hero" src="/assets/xiaomi_8_pro/hero_black.png" alt="Xiaomi Earbuds" />
+              <div class="find-controls-grid">
+                <button id="btn-ring-left" class="find-btn" type="button">
+                  <span class="find-side-badge">L</span>
+                  <span class="find-btn-label">Ring Left</span>
+                </button>
+                <button id="btn-ring-right" class="find-btn" type="button">
+                  <span class="find-side-badge">R</span>
+                  <span class="find-btn-label">Ring Right</span>
+                </button>
+              </div>
+              <button id="btn-ring-both" class="mi-primary-full-btn" type="button">Ring Both Earphones</button>
+            </section>
+          </div>
+        </section>
+
+        <!-- VIEW 7: FIRMWARE INFO -->
+        <section id="screen-update-firmware" class="screen" data-screen="update-firmware">
+          <header class="sub-header">
+            <button class="back-btn" data-back type="button" aria-label="Back"></button>
+            <div class="sub-header-copy">
+              <h2 class="sub-large-title">Firmware info</h2>
+            </div>
+          </header>
+          <div class="pane-scroll card-list-scroll">
+            <section class="card fw-card">
+              <img id="fw-hero-img" class="fw-hero" src="/assets/xiaomi_8_pro/hero_black.png" alt="Firmware" />
+              <div id="fw-version-big" class="fw-version-big">—</div>
+              <div id="fw-status-text" class="fw-status-text">
+                Connect your earphones to read their installed firmware version. For safety, OTA firmware flashing is intentionally disabled on Linux — use the official Xiaomi Earbuds mobile app to update firmware.
+              </div>
+              <button id="btn-check-fw" class="mi-primary-full-btn" type="button">Refresh firmware version</button>
+            </section>
+          </div>
+        </section>
+
+        <!-- VIEW 8: ABOUT DEVICE -->
+        <section id="screen-about-device" class="screen" data-screen="about-device">
+          <header class="sub-header">
+            <button class="back-btn" data-back type="button" aria-label="Back"></button>
+            <div class="sub-header-copy">
+              <h2 class="sub-large-title">About device</h2>
+            </div>
+          </header>
+          <div class="pane-scroll card-list-scroll">
+            <section id="theme-card" class="card theme-card">
+              <div class="eq-header">
+                <span class="row-title">Appearance &amp; Theme</span>
+                <button id="btn-theme-reset" class="text-action-btn hidden" type="button">Reset</button>
+              </div>
+              <div class="theme-segmented" role="radiogroup" aria-label="Theme mode">
+                <button class="theme-seg-btn active" data-theme-mode="dark" type="button">Dark</button>
+                <button class="theme-seg-btn" data-theme-mode="light" type="button">Light</button>
+                <button class="theme-seg-btn" data-theme-mode="custom" type="button">Custom</button>
+              </div>
+
+              <div id="custom-theme-panel" class="custom-theme-panel hidden">
+                <div class="custom-theme-row">
+                  <span class="custom-theme-label">Surface base</span>
+                  <div class="theme-base-pills">
+                    <button class="mi-pill-btn" data-custom-base="dark" type="button">Dark</button>
+                    <button class="mi-pill-btn" data-custom-base="light" type="button">Light</button>
+                  </div>
+                </div>
+                <div class="custom-theme-row">
+                  <span class="custom-theme-label">Accent color</span>
+                  <div class="accent-controls">
+                    <button class="accent-swatch" data-accent="#2581FF" style="background:#2581FF" title="Xiaomi Blue" type="button"></button>
+                    <button class="accent-swatch" data-accent="#18B26B" style="background:#18B26B" title="Emerald" type="button"></button>
+                    <button class="accent-swatch" data-accent="#8B5CF6" style="background:#8B5CF6" title="Violet" type="button"></button>
+                    <button class="accent-swatch" data-accent="#F59E0B" style="background:#F59E0B" title="Amber" type="button"></button>
+                    <button class="accent-swatch" data-accent="#F43F5E" style="background:#F43F5E" title="Rose" type="button"></button>
+                    <button class="accent-swatch" data-accent="#06B6D4" style="background:#06B6D4" title="Cyan" type="button"></button>
+                    <input id="input-theme-accent" class="color-picker-input" type="color" value="#2581FF" aria-label="Custom accent color" />
+                  </div>
+                </div>
+                <div class="custom-theme-row">
+                  <span class="custom-theme-label">Background color</span>
+                  <input id="input-theme-bg" class="color-picker-input" type="color" value="#0A0E17" aria-label="Custom background color" />
+                </div>
+                <div class="custom-theme-row">
+                  <span class="custom-theme-label">Card color</span>
+                  <input id="input-theme-card" class="color-picker-input" type="color" value="#131A29" aria-label="Custom card color" />
+                </div>
+              </div>
+            </section>
+
+            <section class="card menu-group-card">
+              <div class="info-row"><span>Device name</span><span class="info-val" id="about-name">—</span></div>
+              <div class="info-row"><span>Model ID</span><span class="info-val" id="about-model">—</span></div>
+              <div class="info-row"><span>Sale model</span><span class="info-val" id="about-sale-model">—</span></div>
+              <div class="info-row"><span>Firmware version</span><span class="info-val" id="about-fw">—</span></div>
+              <div class="info-row"><span>VID / PID</span><span class="info-val" id="about-vidpid">—</span></div>
+              <div class="info-row"><span>Serial number</span><span class="info-val" id="about-serial">—</span></div>
+              <div class="info-row"><span>Service UUID</span><span class="info-val mono-small" id="about-uuid">—</span></div>
+            </section>
+
+            <section class="card menu-group-card">
+              <div class="menu-row static-row">
+                <span class="menu-row-text"><span class="row-title">Earbuds finish</span></span>
+                <span class="color-dots">
+                  <button class="color-dot dot-black" data-color="black" title="Obsidian Black" aria-label="Obsidian Black" type="button"></button>
+                  <button class="color-dot dot-white" data-color="white" title="Glacier White" aria-label="Glacier White" type="button"></button>
+                  <button class="color-dot dot-blue" data-color="blue" title="Aurora Blue" aria-label="Aurora Blue" type="button"></button>
+                </span>
+              </div>
+              <div class="menu-row static-row">
+                <span class="menu-row-text">
+                  <span class="row-title">Show charging case battery</span>
+                  <span class="row-subtitle-compact">Keep 3rd column visible (hardware reports case % when at least 1 earbud is in the open case)</span>
+                </span>
+                <button id="toggle-show-case" class="mi-switch" type="button" role="switch" aria-checked="false">
+                  <span class="mi-switch-knob"></span>
+                </button>
+              </div>
+            </section>
+          </div>
+        </section>
+
+        <!-- VIEW 9: FAQ -->
+        <section id="screen-faq" class="screen" data-screen="faq">
+          <header class="sub-header">
+            <button class="back-btn" data-back type="button" aria-label="Back"></button>
+            <div class="sub-header-copy">
+              <h2 class="sub-large-title">FAQ</h2>
+            </div>
+          </header>
+          <div class="pane-scroll card-list-scroll">
+            <section class="card faq-card">
+              <div class="faq-q">How do I connect my earbuds on Linux (Ubuntu / Zorin OS)?</div>
+              <div class="faq-a">First pair and connect your earbuds normally in your system Bluetooth settings. Then launch Xiaomi Earbuds — it detects connected Xiaomi/Redmi models in BlueZ, discovers the MIUI SPP RFCOMM channel dynamically, and completes SAFER+ authentication automatically.</div>
+            </section>
+            <section class="card faq-card">
+              <div class="faq-q">Why does the app say "Connection refused" while earbuds are connected to my PC?</div>
+              <div class="faq-a">Xiaomi/Redmi earbuds only allow one host at a time on their MIUI SPP RFCOMM control channel (0xFD2D). If Dual-device connection is active and your smartphone (Xiaomi Earbuds app or HyperOS) is also connected, the phone may hold the control channel. Close the mobile app or briefly disconnect Bluetooth on the phone, then reconnect.</div>
+            </section>
+            <section class="card faq-card">
+              <div class="faq-q">Why does Noise cancellation or Transparency revert to Off?</div>
+              <div class="faq-a">Xiaomi firmware enforces an in-ear wearing check before enabling ANC or Transparency. Place at least one earbud in your ear and try again (you can inspect live wearing state in Additional settings).</div>
+            </section>
+            <section class="card faq-card">
+              <div class="faq-q">Why does the charging case battery show "—" when wearing both earbuds?</div>
+              <div class="faq-a">Xiaomi/Redmi charging cases do not have their own Bluetooth radio. Just like the official mobile app, the case percentage is read via the charging pins only while at least one earbud is seated in the open case. Once read, this app keeps showing the last reported case percentage for the rest of your session.</div>
+            </section>
+            <section class="card faq-card">
+              <div class="faq-q">Why does single tap sometimes trigger by mistake?</div>
+              <div class="faq-a">Single-tap gestures on capacitive stems can trigger when adjusting the earbuds. Set "Tap once" to None in Gestures to avoid accidental pauses.</div>
+            </section>
+            <section class="card faq-card">
+              <div class="faq-q">How does Immersive commute work on Linux?</div>
+              <div class="faq-a">It sends the hardware Immersive Commute command alongside Active Noise Cancellation and plays gentle ambient soundscapes (Airplane, Public transit, Train) through your desktop audio output.</div>
+            </section>
+            <section class="card faq-card">
+              <div class="faq-q">Can I update earbud firmware from Linux?</div>
+              <div class="faq-a">No. OTA firmware flashing is intentionally disabled on Linux to avoid bricking risk. Use the official Xiaomi Earbuds app on Android or iOS for firmware upgrades.</div>
+            </section>
+          </div>
+        </section>
+
+        <!-- VIEW 10: ABOUT APP -->
+        <section id="screen-about-earphones" class="screen" data-screen="about-earphones">
+          <header class="sub-header">
+            <button class="back-btn" data-back type="button" aria-label="Back"></button>
+            <div class="sub-header-copy">
+              <h2 class="sub-large-title">About app</h2>
+            </div>
+          </header>
+          <div class="pane-scroll card-list-scroll">
+            <section class="card menu-group-card">
+              <div class="info-row"><span>Application</span><span class="info-val">MiBuds Linux</span></div>
+              <div class="info-row"><span>Version</span><span class="info-val">0.1.0-beta.1</span></div>
+              <div class="info-row"><span>Bluetooth stack</span><span class="info-val">BlueZ RFCOMM · MMA RCSP · SAFER+</span></div>
+              <div class="info-row"><span>Protocol base</span><span class="info-val">MiBudsClient · BudsLink · XiaomiTWS</span></div>
+              <div class="info-row"><span>License</span><span class="info-val">GNU GPL-3.0 Open Source</span></div>
+            </section>
+            <section class="card faq-card">
+              <div class="faq-q">Independent Community Project</div>
+              <div class="faq-a">MiBuds Linux is a free, unofficial open-source community client and is not affiliated with, endorsed by, or sponsored by Xiaomi Inc. or Dolby Laboratories. All Bluetooth communication runs locally over BlueZ with zero cloud telemetry.</div>
+            </section>
+          </div>
+        </section>
+
+        <!-- VIEW 11: MANAGE / BLUETOOTH & RCSP MONITOR -->
+        <section id="screen-manage" class="screen" data-screen="manage">
+          <header class="sub-header">
+            <button class="back-btn" data-back type="button" aria-label="Back"></button>
+            <div class="sub-header-copy">
+              <h2 class="sub-large-title">Manage your earphones</h2>
+              <p class="sub-subtitle">BlueZ RFCOMM session &amp; RCSP packet monitor</p>
+            </div>
+          </header>
+          <div class="pane-scroll card-list-scroll">
+            <section class="card menu-group-card">
+              <div class="info-row"><span>Transport state</span><span class="info-val" id="bt-mode-badge">Disconnected</span></div>
+              <div class="info-row"><span>MAC address</span><span class="info-val" id="bt-mac-val">—</span></div>
+              <div class="info-row"><span>RFCOMM channel</span><span class="info-val" id="bt-chan-val">—</span></div>
+              <div class="info-row"><span>Authentication</span><span class="info-val" id="bt-auth-val">Standby</span></div>
+            </section>
+
+            <section class="card menu-group-card bt-actions-card">
+              <div class="bt-btn-row">
+                <button id="btn-bt-scan" class="mi-pill-btn" type="button">Scan BlueZ</button>
+                <button id="btn-bt-connect" class="mi-pill-btn primary" type="button">Connect</button>
+                <button id="btn-bt-disconnect" class="mi-pill-btn danger hidden" type="button">Disconnect</button>
+                <button id="btn-bt-battery" class="mi-pill-btn" type="button">Read Info</button>
+              </div>
+              <div id="bt-error-banner" class="bt-error-banner hidden"></div>
+              <div id="bt-devices-list" class="bt-devices-list"></div>
+            </section>
+
+            <section class="card tx-log-card">
+              <div class="eq-header">
+                <span class="row-title">RCSP Packet Log (TX / RX)</span>
+                <button id="btn-clear-log" class="text-action-btn" type="button">Clear log</button>
+              </div>
+              <div id="tx-log-list" class="tx-log-list"></div>
+            </section>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <!-- Floating Context Popup Overlay -->
+    <div id="popup-backdrop" class="popup-backdrop hidden">
+      <div id="popup-menu" class="popup-menu" role="listbox"></div>
+    </div>
+
+    <!-- Bottom Toast -->
+    <div id="mi-toast" class="mi-toast hidden"></div>
+  </div>
+
+  <script src="/icons.js"></script>
+  <script src="/audio.js"></script>
+  <script src="/app.js"></script>
+</body>
+</html>

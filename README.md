@@ -137,7 +137,7 @@ python3 -m unittest discover -s tests -v
 
 ## Development Note
 
-This project was developed with the assistance of AI coding tools and tested on real Linux desktop hardware (Ubuntu / Zorin OS, Wayland, BlueZ 5.72, REDMI Buds 8 Pro). Bug reports and compatibility reports on additional Xiaomi/Redmi models are very welcome via GitHub Issues!
+This project was designed and developed with the assistance of AI coding agents (used for code generation, refactoring, testing, and documentation), with architecture choices, real-hardware testing (Ubuntu / Zorin OS, Wayland, BlueZ 5.72, REDMI Buds 8 Pro), and final review directed by the repository author. Bug reports and compatibility reports on additional Xiaomi/Redmi models are very welcome via GitHub Issues!
 
 ---
 
